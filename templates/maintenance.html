@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Section en Té - Maintenance</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .maintenance-box {
+            text-align: center;
+            padding: 50px 30px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        .maintenance-icon {
+            font-size: 80px;
+            margin-bottom: 30px;
+        }
+        
+        .maintenance-box h1 {
+            color: #003366;
+            background: none;
+            padding: 0;
+            margin: 0 0 20px 0;
+            font-size: 32px;
+        }
+        
+        .progress-bar {
+            width: 80%;
+            height: 10px;
+            background: #ddd;
+            border-radius: 5px;
+            margin: 30px auto;
+            overflow: hidden;
+        }
+        
+        .progress {
+            width: 65%;
+            height: 100%;
+            background: linear-gradient(90deg, #003366, #005599);
+            animation: progress 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes progress {
+            from { width: 65%; }
+            to { width: 70%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="maintenance-box">
+        <div class="maintenance-icon">🔧</div>
+        <h1>Section en Té - En Maintenance</h1>
+        
+        <p style="font-size: 18px; color: #555; max-width: 600px; margin: 0 auto;">
+            Le module de calcul pour les sections en Té est actuellement en cours de développement.
+            Cette fonctionnalité sera disponible prochainement.
+        </p>
+        
+        <div class="progress-bar">
+            <div class="progress"></div>
+        </div>
+        
+        <p style="color: #777;">
+            Estimation de disponibilité : Décembre 2024
+        </p>
+        
+        <a href="/" style="display: inline-block; margin-top: 30px; padding: 12px 30px; 
+           background: #003366; color: white; text-decoration: none; border-radius: 8px;">
+            ← Retour à l'accueil
+        </a>
+    </div>
+
+    <!-- VOTRE NOM EN BAS DE PAGE -->
+    <div class="footer-nom">
+        <p>
+            <strong>RAHANI Soulaimane</strong><br>
+            Futur ingénieur d'État en Génie Civil – BTP<br>
+            Projet académique – Calculs selon normes BAEL
+        </p>
+    </div>
+
+</div>
+
+</body>
+</html>

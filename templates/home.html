@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Calcul BAEL - Accueil</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .hero {
+            text-align: center;
+            padding: 40px 0;
+        }
+        
+        .hero h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            background: none;
+            color: #003366;
+            padding: 0;
+            margin: 0 0 20px 0;
+        }
+        
+        .hero p {
+            font-size: 18px;
+            color: #666;
+            max-width: 700px;
+            margin: 0 auto 30px auto;
+            line-height: 1.6;
+        }
+        
+        .section-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .section-btn {
+            background: white;
+            border: 2px solid #003366;
+            color: #003366;
+            padding: 25px 40px;
+            font-size: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            min-width: 250px;
+        }
+        
+        .section-btn:hover {
+            background: #003366;
+            color: white;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .section-btn.maintenance {
+            border-color: #999;
+            color: #999;
+            cursor: not-allowed;
+        }
+        
+        .author-box {
+            background: linear-gradient(90deg, #f0f7ff, #e3f2fd);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 40px;
+            text-align: center;
+        }
+        
+        .author-box h3 {
+            color: #003366;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="hero">
+        <h1>🛠️ Calcul des Poutres en Béton Armé</h1>
+        <h2 style="color: #005599; margin-bottom: 20px;">Méthode BAEL</h2>
+        
+        <p>Ce logiciel en ligne permet le calcul complet des poutres en béton armé selon les normes BAEL, 
+           avec vérification ELU/ELS et dimensionnement des armatures.</p>
+    </div>
+
+    <div class="section-buttons">
+        <form method="POST" style="margin: 0;">
+            <button name="section" value="rectangulaire" class="section-btn">
+                ✅ Section Rectangulaire<br>
+                <small style="font-size: 14px;">Calcul complet disponible</small>
+            </button>
+        </form>
+        
+        <form method="POST" style="margin: 0;">
+            <button name="section" value="te" class="section-btn maintenance">
+                🔧 Section en Té<br>
+                <small style="font-size: 14px;">En maintenance</small>
+            </button>
+        </form>
+    </div>
+
+    <div class="author-box">
+        <h3>👨‍💻 Auteur du projet</h3>
+        <p style="font-size: 18px; font-weight: bold; color: #003366;">
+            RAHANI Soulaimane<br>
+            <span style="font-size: 16px; font-weight: normal; color: #666;">
+                Futur Ingénieur d'État en Génie Civil – BTP
+            </span>
+        </p>
+        
+    </div>
+
+    <!-- Pied de page SIMPLE pour l'accueil -->
+    <div class="footer-nom" style="margin-top: 50px; color: #888; font-size: 13px;">
+        © 2025 - Calculs selon normes BAEL
+    </div>
+
+</div>
+
+</body>
+</html>

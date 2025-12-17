@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Résultats BAEL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .resultat-section {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .resultat-ligne {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .resultat-ligne .label {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        .resultat-ligne .valeur {
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .resultat-ligne .unite {
+            color: #7f8c8d;
+            margin-left: 5px;
+        }
+        
+        .cas-box {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+        }
+        
+        .cas-1 { background: #d5f4e6; border: 2px solid #27ae60; }
+        .cas-2 { background: #fff3cd; border: 2px solid #ffc107; }
+        .cas-3, .cas-4 { background: #f8d7da; border: 2px solid #e74c3c; }
+        
+        .verif-ok {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        
+        .verif-non {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏗️ RÉSULTATS CALCUL BAEL</h1>
+            <p class="sous-titre">RAHANI Soulaimane - Futur ingénieur en BTP</p>
+        </header>
+
+        <!-- DONNÉES D'ENTRÉE -->
+        <div class="resultat-section">
+            <h2>📋 Données d'entrée</h2>
+            <div class="grid-donnees">
+                <div class="card">
+                    <h3>Géométrie</h3>
+                    <p><strong>b:</strong> {{ donnees.b }} {{ donnees.b_unite }}</p>
+                    <p><strong>h:</strong> {{ donnees.h }} {{ donnees.h_unite }}</p>
+                    <p><strong>d:</strong> {{ donnees.d }} {{ donnees.d_unite }}</p>
+                    <p><strong>d':</strong> {{ donnees.dp }} {{ donnees.dp_unite }}</p>
+                </div>
+                <div class="card">
+                    <h3>Chargement</h3>
+                    <p><strong>Mu:</strong> {{ donnees.Mu }} {{ donnees.Mu_unite }}</p>
+                    <p><strong>Ms:</strong> {{ donnees.Ms }} {{ donnees.Ms_unite }}</p>
+                </div>
+                <div class="card">
+                    <h3>Matériaux</h3>
+                    <p><strong>fc28:</strong> {{ donnees.fc28 }} MPa</p>
+                    <p><strong>Acier:</strong> FeE{{ donnees.acier }} ({{ donnees.acier_ha }})</p>
+                    <p><strong>Fissuration:</strong> {{ donnees.fissuration }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÉTAPE 1 : CALCUL ELU -->
+        <div class="resultat-section">
+            <h2>🔧 ÉTAPE 1 : CALCUL ELU (ÉTAT LIMITE ULTIME)</h2>
+            
+            {% for item in elu.display_order %}
+            <div class="resultat-ligne">
+                <span class="label">{{ item.label|safe }}:</span>
+                <span class="valeur">{{ item.value }} <span class="unite">{{ item.unit }}</span></span>
+            </div>
+            {% endfor %}
+            
+            <!-- Informations supplémentaires -->
+            <div class="resultat-ligne">
+                <span class="label">Type d'armatures:</span>
+                <span class="valeur {% if elu.type == 'simples' %}verif-ok{% else %}verif-non{% endif %}">
+                    {{ 'Simples' if elu.type == 'simples' else 'Doubles' }}
+                </span>
+            </div>
+        </div>
+
+        <!-- ÉTAPE 2 : VÉRIFICATION ELS -->
+        <div class="resultat-section">
+            <h2>📏 ÉTAPE 2 : VÉRIFICATION ELS (ÉTAT LIMITE SERVICE)</h2>
+            
+            {% for item in els.display_order %}
+            <div class="resultat-ligne">
+                <span class="label">{{ item.label|safe }}:</span>
+                <span class="valeur">{{ item.value }} <span class="unite">{{ item.unit }}</span></span>
+            </div>
+            {% endfor %}
+            
+            <!-- Identification du cas -->
+            <div class="cas-box cas-{{ els.cas }}">
+                <h3>{{ els.message_cas }}</h3>
+                <p>Cas {{ els.cas }}</p>
+            </div>
+        </div>
+
+        <!-- CONCLUSION FINALE -->
+        <div class="resultat-section">
+            <h2>✅ CONCLUSION FINALE</h2>
+            
+            <div class="armatures-finales">
+                <div class="armature-box">
+                    <div class="armature-label">A<sub>st</sub> (tendues)</div>
+                    <div class="armature-value">{{ elu.Ast_cm2 }} cm²</div>
+                </div>
+                
+                <div class="armature-box">
+                    <div class="armature-label">A<sub>sc</sub> (comprimées)</div>
+                    <div class="armature-value">{{ elu.Asc_cm2 }} cm²</div>
+                </div>
+            </div>
+            
+            <div class="recommandation">
+                <h3>Recommandation :</h3>
+                <p>
+                    {% if els.cas == 1 %}
+                    ✅ <strong>Les sections calculées en ELU sont suffisantes.</strong><br>
+                    Vous pouvez utiliser A<sub>st</sub> = {{ elu.Ast_cm2 }} cm² 
+                    {% if elu.Asc_cm2 > 0 %}et A<sub>sc</sub> = {{ elu.Asc_cm2 }} cm²{% endif %}.
+                    {% else %}
+                    ⚠️ <strong>Une vérification ELS supplémentaire est nécessaire (Cas {{ els.cas }}).</strong><br>
+                    Les sections ELU doivent être recalculées selon l'organigramme ELS correspondant.
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+
+        <!-- NAVIGATION -->
+        <div class="navigation">
+            <a href="{{ url_for('donnees') }}" class="btn btn-secondary">🔄 Nouveau calcul</a>
+            <a href="{{ url_for('home') }}" class="btn">🏠 Accueil</a>
+            <button onclick="window.print()" class="btn btn-primary">🖨️ Imprimer</button>
+        </div>
+
+        <footer>
+            <p>RAHANI Soulaimane - Futur ingénieur d'état en génie civil BTP</p>
+            <p>© 2025 - Calcul BAEL selon normes en vigueur</p>
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Saisie des données BAEL</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+
+<h1>Saisie des données – Section rectangulaire</h1>
+
+<!-- AFFICHAGE DES ERREURS -->
+{% if erreurs %}
+<div class="erreur-box">
+    <h3>⚠️ Erreurs détectées:</h3>
+    <ul>
+    {% for erreur in erreurs %}
+        <li>{{ erreur }}</li>
+    {% endfor %}
+    </ul>
+    <p><strong>Veuillez adapter les caractéristiques de la section.</strong></p>
+</div>
+{% endif %}
+
+<!-- MESSAGE DE SUCCÈS -->
+{% if success %}
+<div class="success-box">
+    <p>{{ success }}</p>
+</div>
+{% endif %}
+
+<form method="POST">
+
+    <!-- ================= SOLLICITATION ================= -->
+    <h2>Sollicitations</h2>
+
+    <label>Moment ultime Mu (ELU)</label>
+    <input type="number" step="any" name="Mu" required 
+           value="{{ anciennes_valeurs.Mu if anciennes_valeurs else '' }}">
+    <select name="Mu_unite">
+        <option value="kN.m" {% if anciennes_valeurs and anciennes_valeurs.Mu_unite == 'kN.m' %}selected{% endif %}>kN·m</option>
+        <option value="MN.m" {% if anciennes_valeurs and anciennes_valeurs.Mu_unite == 'MN.m' %}selected{% endif %}>MN·m</option>
+    </select>
+
+    <label>Moment de service Ms (ELS)</label>
+    <input type="number" step="any" name="Ms" required 
+           value="{{ anciennes_valeurs.Ms if anciennes_valeurs else '' }}">
+    <select name="Ms_unite">
+        <option value="kN.m" {% if anciennes_valeurs and anciennes_valeurs.Ms_unite == 'kN.m' %}selected{% endif %}>kN·m</option>
+        <option value="MN.m" {% if anciennes_valeurs and anciennes_valeurs.Ms_unite == 'MN.m' %}selected{% endif %}>MN·m</option>
+    </select>
+
+    <!-- ================= GÉOMÉTRIE ================= -->
+    <h2>Géométrie</h2>
+
+    <label>Largeur b</label>
+    <input type="number" step="any" name="b" required 
+           value="{{ anciennes_valeurs.b if anciennes_valeurs else '' }}">
+    <select name="b_unite">
+        <option value="m" {% if anciennes_valeurs and anciennes_valeurs.b_unite == 'm' %}selected{% endif %}>m</option>
+        <option value="cm" {% if anciennes_valeurs and anciennes_valeurs.b_unite == 'cm' %}selected{% endif %}>cm</option>
+        <option value="mm" {% if anciennes_valeurs and anciennes_valeurs.b_unite == 'mm' %}selected{% endif %}>mm</option>
+    </select>
+
+    <label>Hauteur totale h</label>
+    <input type="number" step="any" name="h" required 
+           value="{{ anciennes_valeurs.h if anciennes_valeurs else '' }}">
+    <select name="h_unite">
+        <option value="m" {% if anciennes_valeurs and anciennes_valeurs.h_unite == 'm' %}selected{% endif %}>m</option>
+        <option value="cm" {% if anciennes_valeurs and anciennes_valeurs.h_unite == 'cm' %}selected{% endif %}>cm</option>
+        <option value="mm" {% if anciennes_valeurs and anciennes_valeurs.h_unite == 'mm' %}selected{% endif %}>mm</option>
+    </select>
+
+    <label>Hauteur utile d</label>
+    <input type="number" step="any" name="d" required 
+           value="{{ anciennes_valeurs.d if anciennes_valeurs else '' }}">
+    <select name="d_unite">
+        <option value="m" {% if anciennes_valeurs and anciennes_valeurs.d_unite == 'm' %}selected{% endif %}>m</option>
+        <option value="cm" {% if anciennes_valeurs and anciennes_valeurs.d_unite == 'cm' %}selected{% endif %}>cm</option>
+        <option value="mm" {% if anciennes_valeurs and anciennes_valeurs.d_unite == 'mm' %}selected{% endif %}>mm</option>
+    </select>
+
+    <label>Enrobage d'</label>
+    <input type="number" step="any" name="dp" required 
+           value="{{ anciennes_valeurs.dp if anciennes_valeurs else '' }}">
+    <select name="dp_unite">
+        <option value="m" {% if anciennes_valeurs and anciennes_valeurs.dp_unite == 'm' %}selected{% endif %}>m</option>
+        <option value="cm" {% if anciennes_valeurs and anciennes_valeurs.dp_unite == 'cm' %}selected{% endif %}>cm</option>
+        <option value="mm" {% if anciennes_valeurs and anciennes_valeurs.dp_unite == 'mm' %}selected{% endif %}>mm</option>
+    </select>
+
+    <!-- ================= MATÉRIAUX ================= -->
+    <h2>Matériaux</h2>
+
+    <label>Résistance du béton fc28 (MPa)</label>
+    <input type="number" step="any" name="fc28" required 
+           value="{{ anciennes_valeurs.fc28 if anciennes_valeurs else '' }}">
+
+    <label>Nuance d'acier</label>
+    <select name="acier">
+        <option value="400" {% if anciennes_valeurs and anciennes_valeurs.acier == '400' %}selected{% endif %}>FeE 400</option>
+        <option value="500" {% if anciennes_valeurs and anciennes_valeurs.acier == '500' %}selected{% endif %}>FeE 500</option>
+    </select>
+<!-- Dans la section matériaux, ajouter ceci : -->
+<div class="form-group">
+    <label for="acier_ha">Nature de l'acier :</label>
+    <select id="acier_ha" name="acier_ha" required>
+        <option value="HA" {% if not anciennes_valeurs or anciennes_valeurs.acier_ha == 'HA' %}selected{% endif %}>
+            HA (haute adhérence, η=1.6)
+        </option>
+        <option value="RL" {% if anciennes_valeurs and anciennes_valeurs.acier_ha == 'RL' %}selected{% endif %}>
+            RL (rond lisse, η=1.0)
+        </option>
+    </select>
+</div>
+    <!-- ================= FISSURATION ================= -->
+    <h2>Fissuration (ELS)</h2>
+    <select name="fissuration">
+        <option value="FPP" {% if anciennes_valeurs and anciennes_valeurs.fissuration == 'FPP' %}selected{% endif %}>FPP - Peu préjudiciable</option>
+        <option value="FP" {% if anciennes_valeurs and anciennes_valeurs.fissuration == 'FP' %}selected{% endif %}>FP - Préjudiciable</option>
+        <option value="FTP" {% if anciennes_valeurs and anciennes_valeurs.fissuration == 'FTP' %}selected{% endif %}>FTP - Très préjudiciable</option>
+    </select>
+
+    <br><br>
+    <button type="submit">✅ Lancer le calcul BAEL</button>
+
+</form>
+
+    <!-- Navigation -->
+    <div class="nav-links">
+        <a href="/">🏠 Accueil</a>
+        <a href="/donnees">🔄 Nouveau calcul</a>
+    </div>
+
+    <!-- VOTRE NOM EN BAS DE PAGE -->
+    <div class="footer-nom">
+        <p>
+            <strong>RAHANI Soulaimane</strong><br>
+            Futur ingénieur d'État en Génie Civil – BTP<br>
+            Projet académique – Calculs selon normes BAEL
+        </p>
+    </div>
+
+</div>
+
+</body>
+</html>
